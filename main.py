@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sqlmodel import SQLModel, create_engine
 from starlette.middleware.cors import CORSMiddleware
 
-from api import players_api
+from api import players_api, teams_api
 from db.database import engine
 
 origins = ["http://localhost:3000", ]
@@ -18,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(players_api.router)
+app.include_router(teams_api.router)
 
 
 @app.get("/")

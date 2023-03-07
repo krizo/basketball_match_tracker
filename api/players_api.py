@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, HTTPException, Query
+from sqlalchemy import text
 from sqlmodel import Session, select
 
 from db.database import engine
@@ -23,8 +24,7 @@ def create_player(player: PlayerCreate):
 @router.get("/", response_model=List[PlayerRead])
 def read_players(offset: int = 0, limit: int = 100):
     with Session(engine) as session:
-        players = session.exec(select(Player).offset(offset).limit(limit)).all()
-        return players
+        return session.exec(select(Player).offset(offset).limit(limit)).all()
 
 
 @router.get("{player_id}", response_model=PlayerRead)
@@ -58,3 +58,9 @@ def delete_player(player_id: int):
         session.delete(player)
         session.commit()
         return {"ok": True}
+
+
+@router.get("")
+def read_players_by_team(team_id: int):
+    with Session(engine) as session:
+        return session.exec(select(Player).where(text(f"team_id={team_id}"))).all()
