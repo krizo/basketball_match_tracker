@@ -4,23 +4,22 @@ from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import Session, select
 
 from db.database import engine
-from models.team import Team
+from models.team import Team, TeamRead, TeamCreate
 
-router = APIRouter(prefix="/teams",
-                   tags=["teams"],
-                   responses={404: {"description": "Not found"}})
+router = APIRouter(responses={404: {"description": "Not found"}})
 
 
-@router.post("/", response_model=Team)
-def create_team(team: Team):
+@router.post("/teams/", response_model=TeamRead)
+def create_team(team: TeamCreate):
     with Session(engine) as session:
-        session.add(team)
+        db_team = Team.from_orm(team)
+        session.add(db_team)
         session.commit()
-        session.refresh(team)
-        return team
+        session.refresh(db_team)
+        return db_team
 
 
-@router.get("/", response_model=List[Team])
+@router.get("/teams/", response_model=List[Team])
 def read_teams(offset: int = 0, limit: int = 100):
     with Session(engine) as session:
         players = session.exec(select(Team).offset(offset).limit(limit)).all()

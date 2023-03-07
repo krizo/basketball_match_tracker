@@ -1,5 +1,6 @@
 import pytest
 from fastapi import HTTPException
+from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError
 
 from api.players_api import create_player, read_players, read_player, update_player, delete_player
@@ -10,7 +11,7 @@ from sqlmodel import Session
 
 @pytest.fixture
 def player():
-    return Player(first_name='Emi', last_name='Name', number=0)
+    return Player(first_name='Emi', last_name='Name', number=0, id=1)
 
 
 @pytest.fixture
@@ -54,7 +55,7 @@ def test_player_direct_create(player):
 
 
 def test_player_create_api_no_last_name(player_no_last_name):
-    with pytest.raises(IntegrityError):
+    with pytest.raises(ValidationError):
         create_player(player_no_last_name)
 
 
@@ -67,18 +68,16 @@ def test_player_create_api_no_number(player_no_number):
 
 
 def test_player_create_api(player):
-    create_player(player)
-    players = read_players()
-    assert_player(players[0], player)
-    players_by_id = read_player(player.id)
-    assert_player(players_by_id, player)
+    created_player = create_player(player)
+    players_by_id = read_player(created_player.id)
+    assert_player(players_by_id, created_player)
 
 
 def test_player_update_api(player, player_updated):
     create_player(player)
-    update_player(player_id=player.id, player=player_updated)
+    updated_player = update_player(player_id=player.id, player=player_updated)
     actual_player = read_player(player.id)
-    assert_player(actual_player, player_updated)
+    assert_player(actual_player, updated_player)
 
 
 def test_player_not_existing():

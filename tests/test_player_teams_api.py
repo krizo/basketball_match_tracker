@@ -1,6 +1,6 @@
 import pytest
 
-from api.players_api import create_player, read_players_by_team
+from api.players_api import create_player, read_players_by_team, read_player
 from api.teams_api import create_team
 from main import recreate_db
 from models.player import Player
@@ -31,8 +31,10 @@ def test_create_team(team):
 
 
 def test_create_player_with_team(team, player):
-    create_team(team)
-    create_player(player)
+    db_team = create_team(team)
+    player = create_player(player)
+    db_player = read_player(player.id)
+    assert db_player.team == db_team
 
 
 def test_get_players_in_team(team, player, second_player):
