@@ -1,7 +1,7 @@
 import pytest
 
 from api.players_api import create_player, read_players_by_team, read_player
-from api.teams_api import create_team
+from api.teams_api import create_team, read_team
 from main import recreate_db
 from models.player import Player
 from models.team import Team
@@ -28,6 +28,8 @@ def setup_function():
 
 def test_create_team(team):
     create_team(team)
+    team_read = read_team(team.id)
+    assert team, team_read
 
 
 def test_create_player_with_team(team, player):
