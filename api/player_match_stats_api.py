@@ -39,3 +39,9 @@ def get_scores_2pts_percentage(match_id: int, player_id: int):
     attempts_2pts = get_metric(metric=PlayerMatchStats.attempts_2pts.key, match_id=match_id, player_id=player_id)
     scored_2pts = get_metric(metric=PlayerMatchStats.scored_2pts.key, match_id=match_id, player_id=player_id)
     return get_percentage(scored_2pts, attempts_2pts)
+
+
+def get_scores_3pts_percentage(match_id: int, player_id: int):
+    attempts_3pts = get_metric(metric=PlayerMatchStats.attempts_3pts.key, match_id=match_id, player_id=player_id)
+    scored_3pts = get_metric(metric=PlayerMatchStats.scored_3pts.key, match_id=match_id, player_id=player_id)
+    return get_percentage(scored_3pts, attempts_3pts)
