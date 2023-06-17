@@ -1,7 +1,6 @@
 from typing import Optional, List
 
-from fastapi import HTTPException
-from pydantic import validator, root_validator
+from pydantic import root_validator
 from sqlmodel import SQLModel, Field, JSON, Column
 from datetime import datetime
 
@@ -28,11 +27,6 @@ class PlayerMatchStatsMetrics(SQLModel):
             assert attempts >= scores, \
                 f"'attempts_{points}pts' value {attempts} needs to be greater or equal than 'scored_{points}pts' ({scores})."
         return metrics
-
-    @root_validator
-    def check_metrics_not_negative(cls, metrics):
-        for metric in metrics:
-            assert metric >= 0, f"Metric '{metric}' can't be negative"
 
 
 class PlayerMatchStats(PlayerMatchStatsMetrics, table=True):

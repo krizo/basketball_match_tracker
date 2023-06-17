@@ -1,7 +1,6 @@
 import pytest
 from fastapi import HTTPException
 from pydantic import ValidationError
-from sqlalchemy.exc import IntegrityError
 
 from api.players_api import create_player, read_players, read_player, update_player, delete_player
 from main import engine, recreate_db

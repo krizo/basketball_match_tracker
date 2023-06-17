@@ -5,7 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 from api import players_api, teams_api, matches_api, player_match_stats_api
 from db.database import engine
 
-origins = ["http://localhost:3000", ]
+origins = ["http://localhost:3000", "http://localhost:3002"]
 
 app = FastAPI()
 

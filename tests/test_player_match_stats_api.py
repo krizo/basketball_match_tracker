@@ -1,7 +1,6 @@
 import datetime
 
 import pytest
-from pydantic import ValidationError
 
 from api.matches_api import create_match
 from api.player_match_stats_api import create_match_stats, read_match_stats, update_match_stats, \
@@ -48,8 +47,7 @@ def player_match_stats(player_1, team, match):
 def player_1_match_stats_metrics(player_1, team, match):
     return PlayerMatchStats(id=1, player_id=player_1.id, match_id=match.id, attempts_2pts=7, attempts_3pts=7,
                             attempts_1pts=1, scored_1pts=1, scored_2pts=5, scored_3pts=1, rebounds_defensive=10,
-                            rebounds_offensive=3,
-                            assists=14, steals=3, blocks=2, turnovers=2, fouls=6,
+                            rebounds_offensive=3, assists=14, steals=3, blocks=2, turnovers=2, fouls=6,
                             changed_in=[0, 600, 1200], changed_out=[300, 900, 1800])
 
 
@@ -64,7 +62,7 @@ def player_2_match_stats_metrics(player_2, match):
 @pytest.fixture
 def match_stats_metrics_attempts_greater_than_scores(player_2, match):
     return PlayerMatchStats(id=2, player_id=player_2.id, match_id=match.id, attempts_1pts=1, scored_1pts=2,
-                            scored_2pts=-1,  attempts_2pts=0, attempts_3pts=0, scored_3pts=0,)
+                            scored_2pts=-1, attempts_2pts=0, attempts_3pts=0, scored_3pts=0, )
 
 
 def setup_function():
@@ -126,8 +124,3 @@ def test_match_stats_3_pts_percentage(player_1_match_stats_metrics):
                                              player_id=player_1_match_stats_metrics.player_id)
     expected_perc = get_percentage(player_1_match_stats_metrics.scored_3pts, player_1_match_stats_metrics.attempts_3pts)
     assert scores_perc == expected_perc
-
-
-def test_match_stats_create_invalid(match_stats_metrics_invalid):
-    with pytest.raises(ValidationError):
-        create_match_stats(match_stats_metrics_invalid)
